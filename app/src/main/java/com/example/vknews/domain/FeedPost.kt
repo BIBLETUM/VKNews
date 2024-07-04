@@ -2,7 +2,7 @@ package com.example.vknews.domain
 
 import com.example.vknews.R
 
-data class PostData (
+data class FeedPost (
     val id: Int,
     val communityName: String = "/dev/null",
     val date: String = "14:00",

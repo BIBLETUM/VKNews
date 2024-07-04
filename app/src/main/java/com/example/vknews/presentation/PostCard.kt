@@ -27,14 +27,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.vknews.R
-import com.example.vknews.domain.PostData
+import com.example.vknews.domain.FeedPost
 import com.example.vknews.domain.StatisticItem
 import com.example.vknews.domain.StatisticType
 
 @Composable
 fun PostCard(
     modifier: Modifier = Modifier,
-    postData: PostData,
+    feedPost: FeedPost,
     onViewItemClickListener: (StatisticItem) -> Unit,
     onLikeItemClickListener: (StatisticItem) -> Unit,
     onShareItemClickListener: (StatisticItem) -> Unit,
@@ -46,10 +46,10 @@ fun PostCard(
         shape = RoundedCornerShape(4.dp),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        TopBar(postData.communityName, postData.date, postData.communityImageResId)
-        TextAndImage(postData.postText, postData.postImageResIs)
+        TopBar(feedPost.communityName, feedPost.date, feedPost.communityImageResId)
+        TextAndImage(feedPost.postText, feedPost.postImageResIs)
         BottomInformation(
-            postData.statistics,
+            feedPost.statistics,
             onLikeItemClickListener = onLikeItemClickListener,
             onShareItemClickListener = onShareItemClickListener,
             onViewItemClickListener = onViewItemClickListener,

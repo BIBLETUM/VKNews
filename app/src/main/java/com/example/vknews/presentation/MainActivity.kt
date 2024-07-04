@@ -8,13 +8,11 @@ import com.example.vknews.presentation.theme.VKNewsTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<MainViewModel>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             VKNewsTheme {
-                MainScreen(viewModel)
+                MainScreen()
             }
 
         }
