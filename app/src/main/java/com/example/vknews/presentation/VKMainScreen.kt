@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.vknews.domain.FeedPost
 import com.example.vknews.presentation.navigation.AppNavGraph
@@ -32,7 +33,7 @@ import com.example.vknews.presentation.navigation.rememberNavigationState
 fun MainScreen() {
     val navigationState = rememberNavigationState()
 
-    val commentsToState: MutableState<FeedPost?> = remember {
+    val commentsToPost: MutableState<FeedPost?> = remember {
         mutableStateOf(null)
     }
 
@@ -45,21 +46,27 @@ fun MainScreen() {
         modifier = Modifier.padding(8.dp),
         bottomBar = {
             val backStackEntry by navigationState.navHostController.currentBackStackEntryAsState()
-            val currentRoute = backStackEntry?.destination?.route
             NavigationBar(modifier = Modifier.shadow(10.dp)) {
                 listNavItems.forEach { navigationItem ->
+
+                    val selected = backStackEntry?.destination?.hierarchy?.any {
+                        it.route == navigationItem.screen.route
+                    } ?: false
+
                     NavigationBarItem(
-                        selected = navigationItem.screen.route == currentRoute,
+                        selected = selected,
                         icon = {
                             Icon(
                                 imageVector =
-                                if (navigationItem.screen.route == currentRoute) navigationItem.imageSelected
+                                if (selected) navigationItem.imageSelected
                                 else navigationItem.imageUnSelected,
                                 contentDescription = null
                             )
                         },
                         onClick = {
-                            navigationState.navigateTo(navigationItem.screen.route)
+                            if (!selected) {
+                                navigationState.navigateTo(navigationItem.screen.route)
+                            }
                         },
                         label = { Text(text = stringResource(id = navigationItem.nameResId)) },
                         colors = NavigationBarItemDefaults.colors(
@@ -76,19 +83,22 @@ fun MainScreen() {
     ) { paddingValues ->
         AppNavGraph(
             navHostController = navigationState.navHostController,
-            homeScreenContent = {
-                if (commentsToState.value == null) {
-                    HomeScreen(
-                        paddingValues = paddingValues,
-                    ) {
-                        commentsToState.value = it
-                    }
-                } else {
-                    CommentsScreen {
-                        commentsToState.value = null
-                    }
+            feedPostScreenContent = {
+                HomeScreen(
+                    paddingValues = paddingValues,
+                ) {
+                    commentsToPost.value = it
+                    navigationState.navigateToComments()
                 }
-
+            },
+            commentsScreenContent = {
+                CommentsScreen(
+                    paddingValues = paddingValues,
+                    onBackPressed = {
+                        navigationState.navHostController.popBackStack()
+                    },
+                    feedPost = commentsToPost.value!!
+                )
             },
             favouriteScreenContent = { ScreenText(text = "Favourite") },
             profileScreenContent = { ScreenText(text = "Profile") })

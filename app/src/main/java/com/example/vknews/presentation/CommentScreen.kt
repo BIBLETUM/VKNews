@@ -22,8 +22,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,74 +33,95 @@ import com.example.vknews.domain.PostComment
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentsScreen(
-    onBackClick: () -> Unit,
+    paddingValues: PaddingValues,
+    onBackPressed: () -> Unit,
+    feedPost: FeedPost,
 ) {
-    val viewModel: CommentsViewModel = viewModel()
-    val screenState =
-        viewModel.commentsScreenState.observeAsState(initial = CommentsScreenState.Initial)
+    val viewModel: CommentsViewModel = viewModel(
+        factory = CommentsViewModelFactory(feedPost)
+    )
+    val screenState = viewModel.screenState.observeAsState(CommentsScreenState.Initial)
     val currentState = screenState.value
+
     if (currentState is CommentsScreenState.Comments) {
-        Scaffold(topBar = {
-            TopAppBar(modifier = Modifier.shadow(8.dp), title = {
-                Text(text = "Comments for FeedPost id: ${currentState.feedPost.id}")
-            }, navigationIcon = {
-                IconButton(onClick = { onBackClick() }, content = {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
-                })
-            })
-        }) { paddingValues ->
+        Scaffold(
+            modifier = Modifier.padding(paddingValues),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(text = "Comments for FeedPost Id: ${currentState.feedPost.id}")
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { onBackPressed() }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+            }
+        ) { innerPaddingValues ->
             LazyColumn(
-                modifier = Modifier
-                    .padding(paddingValues),
+                modifier = Modifier.padding(innerPaddingValues),
                 contentPadding = PaddingValues(
-                    top = 16.dp,
                     start = 8.dp,
                     end = 8.dp,
-                    bottom = 72.dp
                 )
             ) {
-                items(items = currentState.comments, key = { it.id }) { comment ->
-                    Comment(comment)
+                items(
+                    items = currentState.comments,
+                    key = { it.id }
+                ) { comment ->
+                    CommentItem(comment = comment)
                 }
             }
         }
     }
-
 }
 
 @Composable
-private fun Comment(comment: PostComment = PostComment(id = 0)) {
+private fun CommentItem(
+    comment: PostComment
+) {
     Row(
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 4.dp)
             .fillMaxWidth()
+            .padding(
+                horizontal = 16.dp,
+                vertical = 4.dp
+            ),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Image(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .size(30.dp),
+            modifier = Modifier.size(24.dp),
             painter = painterResource(id = comment.authorAvatarResId),
-            contentDescription = null,
-
-            )
-        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            contentDescription = null
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
-                text = comment.authorName + comment.id.toString(),
+                text = "${comment.authorName} CommentId: ${comment.id}",
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 12.sp
             )
-
             Text(
                 text = comment.commentText,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 14.sp
             )
-
             Text(
                 text = comment.publicationTime,
                 color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 12.sp
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewComment() {
+    MaterialTheme {
+        //CommentsScreen(onBackPressed = {}, feedPost = FeedPost(id = 0))
     }
 }
