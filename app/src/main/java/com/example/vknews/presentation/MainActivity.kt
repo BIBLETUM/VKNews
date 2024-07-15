@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.vknews.presentation.theme.Test
 import com.example.vknews.presentation.theme.VKNewsTheme
 
 class MainActivity : ComponentActivity() {
@@ -12,9 +13,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             VKNewsTheme {
-                MainScreen()
+                Test()
+//                MainScreen()
             }
-
         }
     }
 }

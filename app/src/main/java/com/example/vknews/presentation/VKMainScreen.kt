@@ -33,10 +33,6 @@ import com.example.vknews.presentation.navigation.rememberNavigationState
 fun MainScreen() {
     val navigationState = rememberNavigationState()
 
-    val commentsToPost: MutableState<FeedPost?> = remember {
-        mutableStateOf(null)
-    }
-
     val listNavItems = listOf(
         NavigationItem.Home,
         NavigationItem.Favourite,
@@ -86,9 +82,8 @@ fun MainScreen() {
             feedPostScreenContent = {
                 HomeScreen(
                     paddingValues = paddingValues,
-                ) {
-                    commentsToPost.value = it
-                    navigationState.navigateToComments()
+                ) { feedPost ->
+                    navigationState.navigateToComments(feedPost)
                 }
             },
             commentsScreenContent = {
@@ -97,7 +92,7 @@ fun MainScreen() {
                     onBackPressed = {
                         navigationState.navHostController.popBackStack()
                     },
-                    feedPost = commentsToPost.value!!
+                    feedPost = it
                 )
             },
             favouriteScreenContent = { ScreenText(text = "Favourite") },

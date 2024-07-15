@@ -1,8 +1,14 @@
 package com.example.vknews.domain
 
+import android.os.Bundle
+import android.os.Parcelable
+import androidx.navigation.NavType
 import com.example.vknews.R
+import com.google.gson.Gson
+import kotlinx.parcelize.Parcelize
 
-data class FeedPost (
+@Parcelize
+data class FeedPost(
     val id: Int,
     val communityName: String = "/dev/null",
     val date: String = "14:00",
@@ -15,4 +21,21 @@ data class FeedPost (
         StatisticItem(StatisticType.COMMENTS, 8),
         StatisticItem(StatisticType.LIKES, 27)
     ),
-)
+) : Parcelable {
+    companion object {
+        val NavType: NavType<FeedPost> = object : NavType<FeedPost>(false) {
+            override fun get(bundle: Bundle, key: String): FeedPost? {
+                return bundle.getParcelable(key)
+            }
+
+            override fun parseValue(value: String): FeedPost {
+                return Gson().fromJson(value, FeedPost::class.java)
+            }
+
+            override fun put(bundle: Bundle, key: String, value: FeedPost) {
+                bundle.putParcelable(key, value)
+            }
+
+        }
+    }
+}
