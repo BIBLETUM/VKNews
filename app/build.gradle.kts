@@ -1,7 +1,14 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = Properties()
+localProperties.load(FileInputStream(localPropertiesFile))
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id ("kotlin-parcelize")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -19,6 +26,14 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        addManifestPlaceholders(
+            mapOf(
+                "VKIDClientID" to localProperties.getProperty("VKIDClientID"),
+                "VKIDClientSecret" to localProperties.getProperty("VKIDClientSecret"),
+                "VKIDRedirectHost" to "vk.com",
+                "VKIDRedirectScheme" to "vk51994947",
+            )
+        )
     }
 
     buildTypes {
@@ -31,6 +46,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -51,16 +67,19 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring (libs.desugar.jdk.libs)
+    implementation(libs.onetap.compose)
+    implementation(libs.vkid)
     implementation(libs.coil.compose)
-    implementation (libs.gson)
-    implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.gson)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.runtime.livedata)
-    implementation (libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
