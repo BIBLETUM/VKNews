@@ -3,7 +3,6 @@ package com.example.vknews.domain
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
-import com.example.vknews.R
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 
@@ -16,6 +15,7 @@ data class FeedPost(
     val communityImageUrl: String,
     val postImageUrl: String?,
     val statistics: List<StatisticItem>,
+    val isFavourite: Boolean,
 ) : Parcelable {
 
 
