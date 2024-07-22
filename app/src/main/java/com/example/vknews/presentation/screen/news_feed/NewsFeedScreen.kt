@@ -19,7 +19,7 @@ import com.example.vknews.domain.FeedPost
 import com.example.vknews.presentation.components.PostCard
 
 @Composable
-fun HomeScreen(paddingValues: PaddingValues, onCommentsClick: (FeedPost) -> Unit) {
+fun NewsFeedScreen(paddingValues: PaddingValues, onCommentsClick: (FeedPost) -> Unit) {
     val viewModel: NewsFeedViewModel = viewModel()
     val newsFeedScreenState =
         viewModel.newsFeedScreenState.observeAsState(NewsFeedScreenState.Initial)

@@ -25,7 +25,7 @@ import com.example.vknews.presentation.navigation.AppNavGraph
 import com.example.vknews.presentation.navigation.NavigationItem
 import com.example.vknews.presentation.navigation.rememberNavigationState
 import com.example.vknews.presentation.screen.comments.CommentsScreen
-import com.example.vknews.presentation.screen.news_feed.HomeScreen
+import com.example.vknews.presentation.screen.news_feed.NewsFeedScreen
 
 @Composable
 fun MainScreen() {
@@ -78,7 +78,7 @@ fun MainScreen() {
         AppNavGraph(
             navHostController = navigationState.navHostController,
             feedPostScreenContent = {
-                HomeScreen(
+                NewsFeedScreen(
                     paddingValues = paddingValues,
                 ) { feedPost ->
                     navigationState.navigateToComments(feedPost)
