@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.vknews.R
 import com.example.vknews.domain.FeedPost
 import com.example.vknews.domain.StatisticItem
@@ -46,8 +48,8 @@ fun PostCard(
         shape = RoundedCornerShape(4.dp),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        TopBar(feedPost.communityName, feedPost.date, feedPost.communityImageResId)
-        TextAndImage(feedPost.postText, feedPost.postImageResIs)
+        TopBar(feedPost.communityName, feedPost.date, feedPost.communityImageUrl)
+        TextAndImage(feedPost.postText, feedPost.postImageUrl)
         BottomInformation(
             feedPost.statistics,
             onLikeItemClickListener = onLikeItemClickListener,
@@ -60,15 +62,15 @@ fun PostCard(
 }
 
 @Composable
-fun TopBar(communityName: String, date: String, communityImageResId: Int) {
+fun TopBar(communityName: String, date: String, communityImageUrl: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Image(
-            painter = painterResource(id = communityImageResId),
+        AsyncImage(
+            model = communityImageUrl,
             contentDescription = "",
             modifier = Modifier
                 .size(50.dp)
@@ -97,18 +99,18 @@ fun TopBar(communityName: String, date: String, communityImageResId: Int) {
 }
 
 @Composable
-fun TextAndImage(text: String, postImageResId: Int) {
+fun TextAndImage(text: String, postImageUrl: String?) {
     Text(
         text = text, modifier = Modifier
             .padding(8.dp)
     )
-    Image(
+    AsyncImage(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .wrapContentHeight()
             .padding(8.dp),
         contentScale = ContentScale.FillWidth,
-        painter = painterResource(id = postImageResId),
+        model = postImageUrl,
         contentDescription = ""
     )
 }

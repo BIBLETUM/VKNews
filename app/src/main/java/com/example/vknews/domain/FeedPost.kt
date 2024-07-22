@@ -14,7 +14,7 @@ data class FeedPost(
     val date: String,
     val postText: String,
     val communityImageUrl: String,
-    val postImageUrl: String,
+    val postImageUrl: String?,
     val statistics: List<StatisticItem>,
 ) : Parcelable {
 

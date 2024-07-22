@@ -31,7 +31,7 @@ android {
                 "VKIDClientID" to localProperties.getProperty("VKIDClientID"),
                 "VKIDClientSecret" to localProperties.getProperty("VKIDClientSecret"),
                 "VKIDRedirectHost" to "vk.com",
-                "VKIDRedirectScheme" to "vk51994947",
+                "VKIDRedirectScheme" to localProperties.getProperty("VKIDRedirectScheme"),
             )
         )
     }

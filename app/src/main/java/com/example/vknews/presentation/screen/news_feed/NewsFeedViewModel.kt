@@ -1,30 +1,38 @@
 package com.example.vknews.presentation.screen.news_feed
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.vknews.data.mapper.NewsFeedMapper
+import com.example.vknews.data.network.ApiFactory
 import com.example.vknews.domain.FeedPost
 import com.example.vknews.domain.StatisticItem
+import com.example.vknews.presentation.TokenManager
+import kotlinx.coroutines.launch
 
-class NewsFeedViewModel : ViewModel() {
+class NewsFeedViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val initialList = mutableListOf<FeedPost>().apply {
-        repeat(500) {
-            add(
-                FeedPost(
-                    id = it,
-                    communityName = "Community name: $it",
-                    date = "${(0..24).random()}:${(0..60).random()}",
-                    postText = "Text: $it"
-                )
-            )
-        }
-    }
-
-    private val initialState = NewsFeedScreenState.Posts(initialList.toList())
+    private val initialState = NewsFeedScreenState.Initial
 
     private val _newsFeedScreenState = MutableLiveData<NewsFeedScreenState>(initialState)
     val newsFeedScreenState: LiveData<NewsFeedScreenState> = _newsFeedScreenState
+
+    private val mapper = NewsFeedMapper()
+
+    init {
+        loadNewsFeed()
+    }
+
+    private fun loadNewsFeed() {
+        viewModelScope.launch {
+            val token = TokenManager(getApplication()).getToken() ?: return@launch
+            val response = ApiFactory.apiService.loadFeedPosts(token)
+            val feedPost = mapper.mapResponseToPost(response)
+            _newsFeedScreenState.value = NewsFeedScreenState.Posts(feedPost)
+        }
+    }
 
     fun updatePost(post: FeedPost, newItem: StatisticItem) {
         val currentState = _newsFeedScreenState.value

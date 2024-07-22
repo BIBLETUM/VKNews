@@ -1,9 +1,41 @@
 package com.example.vknews.data.mapper
 
+import android.util.Log
+import com.example.vknews.data.model.NewsFeedResponseDto
+import com.example.vknews.domain.FeedPost
+import com.example.vknews.domain.StatisticItem
+import com.example.vknews.domain.StatisticType
+import kotlin.math.absoluteValue
+
 class NewsFeedMapper {
 
-    fun mapResponseToPost(){
+    fun mapResponseToPost(responseDto: NewsFeedResponseDto): List<FeedPost> {
+        val result = mutableListOf<FeedPost>()
 
+        val posts = responseDto.newsFeedContent.posts
+        val groups = responseDto.newsFeedContent.groups
+
+        for (post in posts) {
+            Log.d("POSTS", post.toString())
+            val group = groups.find { it.id == post.communityId.absoluteValue } ?: continue
+            val feedPost = FeedPost(
+                id = post.id,
+                communityName = group.name,
+                date = post.date.toString(),
+                postText = post.text,
+                communityImageUrl = group.photoUrl,
+                postImageUrl = post.attachments?.firstOrNull()?.photo?.photoUrls?.lastOrNull()?.url ?: "",
+                statistics = listOf(
+                    StatisticItem(type = StatisticType.LIKES, count = post.likes.count),
+                    StatisticItem(type = StatisticType.VIEWS, count = post.views.count),
+                    StatisticItem(type = StatisticType.COMMENTS, count = post.comments.count),
+                    StatisticItem(type = StatisticType.SHARES, count = post.reposts.count),
+                )
+            )
+            result.add(feedPost)
+        }
+
+        return result.toList()
     }
 
 }
