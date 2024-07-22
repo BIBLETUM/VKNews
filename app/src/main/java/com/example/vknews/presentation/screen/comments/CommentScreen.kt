@@ -1,4 +1,4 @@
-package com.example.vknews.presentation
+package com.example.vknews.presentation.screen.comments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.example.vknews.presentation
+package com.example.vknews.presentation.screen.news_feed
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

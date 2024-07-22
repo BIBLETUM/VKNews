@@ -1,4 +1,4 @@
-package com.example.vknews.presentation
+package com.example.vknews.presentation.screen.news_feed
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vknews.domain.FeedPost
+import com.example.vknews.presentation.components.PostCard
 
 @Composable
 fun HomeScreen(paddingValues: PaddingValues, onCommentsClick: (FeedPost) -> Unit) {

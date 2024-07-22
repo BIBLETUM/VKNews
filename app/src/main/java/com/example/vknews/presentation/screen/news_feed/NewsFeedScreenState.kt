@@ -1,7 +1,6 @@
-package com.example.vknews.presentation
+package com.example.vknews.presentation.screen.news_feed
 
 import com.example.vknews.domain.FeedPost
-import com.example.vknews.domain.PostComment
 
 sealed class NewsFeedScreenState {
     object Initial: NewsFeedScreenState()
