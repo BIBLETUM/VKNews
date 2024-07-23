@@ -17,13 +17,24 @@ class NewsFeedRepository(application: Application) {
     private val mapper = NewsFeedMapper()
 
     private val _feedPosts = mutableListOf<FeedPost>()
-    val feedPost: List<FeedPost>
+    val feedPosts: List<FeedPost>
         get() = _feedPosts.toList()
 
+    private var nextFrom: String? = null
+
     suspend fun loadRecommendations(): List<FeedPost> {
-        val response = apiService.loadFeedPosts(getAccessToken())
-        val feedPosts = mapper.mapResponseToPost(response)
-        _feedPosts.addAll(feedPosts)
+        val startFrom = nextFrom
+
+        if (startFrom == null && _feedPosts.isNotEmpty()) return feedPosts
+
+        val response = if (startFrom == null) {
+            apiService.loadFeedPosts(getAccessToken())
+        } else {
+            apiService.loadFeedPosts(getAccessToken(), startFrom)
+        }
+        nextFrom = response.newsFeedContent.nextFrom
+        val posts = mapper.mapResponseToPost(response)
+        _feedPosts.addAll(posts)
         return feedPosts
     }
 
@@ -47,22 +58,6 @@ class NewsFeedRepository(application: Application) {
             add(StatisticItem(type = StatisticType.LIKES, count = likesCount))
         }
         val newPost = feedPost.copy(statistics = newStatistics, isLiked = !feedPost.isLiked)
-        val index = _feedPosts.indexOf(feedPost)
-        _feedPosts[index] = newPost
-    }
-
-    suspend fun deleteLike(feedPost: FeedPost) {
-        val response = apiService.deleteLike(
-            token = getAccessToken(),
-            ownerId = feedPost.communityId,
-            postId = feedPost.id,
-        )
-        val likesCount = response.likes.count
-        val newStatistics = feedPost.statistics.toMutableList().apply {
-            removeIf { it.type == StatisticType.LIKES }
-            add(StatisticItem(type = StatisticType.LIKES, count = likesCount))
-        }
-        val newPost = feedPost.copy(statistics = newStatistics, isLiked = false)
         val index = _feedPosts.indexOf(feedPost)
         _feedPosts[index] = newPost
     }
