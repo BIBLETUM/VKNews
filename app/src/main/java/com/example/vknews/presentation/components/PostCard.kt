@@ -53,7 +53,7 @@ fun PostCard(
         TextAndImage(feedPost.postText, feedPost.postImageUrl)
         BottomInformation(
             statistics = feedPost.statistics,
-            isFavourite = feedPost.isFavourite,
+            isFavourite = feedPost.isLiked,
             onLikeItemClickListener = onLikeItemClickListener,
             onShareItemClickListener = onShareItemClickListener,
             onViewItemClickListener = onViewItemClickListener,

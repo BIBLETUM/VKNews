@@ -1,7 +1,7 @@
 package com.example.vknews.data.mapper
 
 import android.util.Log
-import com.example.vknews.data.model.NewsFeedResponseDto
+import com.example.vknews.data.model.feed_dto.NewsFeedResponseDto
 import com.example.vknews.domain.FeedPost
 import com.example.vknews.domain.StatisticItem
 import com.example.vknews.domain.StatisticType
@@ -23,6 +23,7 @@ class NewsFeedMapper {
             val group = groups.find { it.id == post.communityId.absoluteValue } ?: continue
             val feedPost = FeedPost(
                 id = post.id,
+                communityId = post.communityId,
                 communityName = group.name,
                 date = mapTimeStampToDate(post.date * 1000),
                 postText = post.text,
@@ -35,7 +36,7 @@ class NewsFeedMapper {
                     StatisticItem(type = StatisticType.COMMENTS, count = post.comments.count),
                     StatisticItem(type = StatisticType.SHARES, count = post.reposts.count),
                 ),
-                isFavourite = post.isFavorite,
+                isLiked = post.likes.userLikes > 0,
             )
             result.add(feedPost)
         }
