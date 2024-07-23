@@ -38,6 +38,15 @@ class NewsFeedRepository(application: Application) {
         return feedPosts
     }
 
+    suspend fun ignoreFeedPost(feedPost: FeedPost) {
+        apiService.ignoreItem(
+            token = getAccessToken(),
+            ownerId = feedPost.communityId,
+            postId = feedPost.id,
+        )
+        _feedPosts.remove(feedPost)
+    }
+
     suspend fun changeLikeStatus(feedPost: FeedPost) {
         val response = if (feedPost.isLiked) {
             apiService.deleteLike(

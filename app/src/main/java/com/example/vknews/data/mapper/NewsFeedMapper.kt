@@ -1,6 +1,5 @@
 package com.example.vknews.data.mapper
 
-import android.util.Log
 import com.example.vknews.data.model.feed_dto.NewsFeedResponseDto
 import com.example.vknews.domain.FeedPost
 import com.example.vknews.domain.StatisticItem
@@ -19,7 +18,6 @@ class NewsFeedMapper {
         val groups = responseDto.newsFeedContent.groups
 
         for (post in posts) {
-            Log.d("POSTS", post.toString())
             val group = groups.find { it.id == post.communityId.absoluteValue } ?: continue
             val feedPost = FeedPost(
                 id = post.id,

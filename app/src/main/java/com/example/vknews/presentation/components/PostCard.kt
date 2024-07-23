@@ -38,9 +38,7 @@ import java.util.Locale
 fun PostCard(
     modifier: Modifier = Modifier,
     feedPost: FeedPost,
-    onViewItemClickListener: (StatisticItem) -> Unit,
     onLikeItemClickListener: (StatisticItem) -> Unit,
-    onShareItemClickListener: (StatisticItem) -> Unit,
     onCommentItemClickListener: (StatisticItem) -> Unit,
 ) {
     Card(
@@ -55,8 +53,6 @@ fun PostCard(
             statistics = feedPost.statistics,
             isFavourite = feedPost.isLiked,
             onLikeItemClickListener = onLikeItemClickListener,
-            onShareItemClickListener = onShareItemClickListener,
-            onViewItemClickListener = onViewItemClickListener,
             onCommentItemClickListener = onCommentItemClickListener
         )
     }
@@ -121,9 +117,7 @@ fun TextAndImage(text: String, postImageUrl: String?) {
 fun BottomInformation(
     statistics: List<StatisticItem>,
     isFavourite: Boolean,
-    onViewItemClickListener: (StatisticItem) -> Unit,
     onLikeItemClickListener: (StatisticItem) -> Unit,
-    onShareItemClickListener: (StatisticItem) -> Unit,
     onCommentItemClickListener: (StatisticItem) -> Unit,
 ) {
     Row(
@@ -139,7 +133,7 @@ fun BottomInformation(
             IconWithText(
                 iconResId = R.drawable.ic_views_count,
                 text = formatStatisticCountToString(viewsItem.count)
-            ) { onViewItemClickListener(viewsItem) }
+            )
         }
 
         Row(
@@ -151,7 +145,7 @@ fun BottomInformation(
             IconWithText(
                 iconResId = R.drawable.ic_share,
                 text = formatStatisticCountToString(repostsItem.count)
-            ) { onShareItemClickListener(repostsItem) }
+            )
             IconWithText(
                 iconResId = R.drawable.ic_comment,
                 text = formatStatisticCountToString(commentsItem.count)
@@ -191,12 +185,17 @@ fun IconWithText(
     iconResId: Int,
     text: String,
     iconTint: Color = MaterialTheme.colorScheme.onSecondary,
-    onStatisticItemClickListener: () -> Unit,
+    onStatisticItemClickListener: (() -> Unit)? = null,
 ) {
-    Row(
-        modifier = Modifier.clickable {
+    val modifier = if (onStatisticItemClickListener != null) {
+        Modifier.clickable {
             onStatisticItemClickListener()
-        },
+        }
+    } else {
+        Modifier
+    }
+    Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
