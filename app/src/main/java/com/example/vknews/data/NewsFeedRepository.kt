@@ -11,10 +11,12 @@ import com.example.vknews.extentions.mergeWith
 import com.example.vknews.presentation.TokenManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 
 class NewsFeedRepository(application: Application) {
@@ -43,6 +45,9 @@ class NewsFeedRepository(application: Application) {
             _feedPosts.addAll(posts)
             emit(feedPosts)
         }
+    }.retry {
+        delay(RETRY_TIMEOUT)
+        true
     }
 
     private val tokenManager = TokenManager(application)
@@ -104,16 +109,27 @@ class NewsFeedRepository(application: Application) {
         refreshedListFlow.emit(feedPosts)
     }
 
-    suspend fun getComments(feedPost: FeedPost): List<PostComment> {
+    fun commentsFlow(feedPost: FeedPost): StateFlow<List<PostComment>> = flow {
         val comments = apiService.getComments(
             getAccessToken(),
             feedPost.communityId,
             feedPost.id
         )
-        return mapper.mapResponseToComments(comments)
-    }
+        emit(mapper.mapResponseToComments(comments))
+    }.retry {
+        delay(RETRY_TIMEOUT)
+        true
+    }.stateIn(
+        scope = scope,
+        started = SharingStarted.Lazily,
+        initialValue = listOf()
+    )
 
     private fun getAccessToken(): String {
         return token ?: throw IllegalStateException("Token is null")
+    }
+
+    companion object {
+        private const val RETRY_TIMEOUT = 3000L
     }
 }

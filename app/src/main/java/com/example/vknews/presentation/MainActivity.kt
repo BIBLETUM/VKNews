@@ -5,9 +5,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.vknews.presentation.screen.login.AuthState
+import com.example.vknews.data.model.AuthState
 import com.example.vknews.presentation.screen.login.LoginScreen
 import com.example.vknews.presentation.screen.login.LoginScreenViewModel
 import com.example.vknews.presentation.screen.login.LoginViewModelFactory
@@ -22,22 +21,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             VKNewsTheme {
                 val viewModel: LoginScreenViewModel = viewModel(
-                    factory = LoginViewModelFactory(VKID.instance)
+                    factory = LoginViewModelFactory(VKID.instance, application)
                 )
-                val authState = viewModel.authState.collectAsState()
+                val authState = viewModel.getAuthState().collectAsState()
 
                 when (val currentState = authState.value) {
                     is AuthState.Authorized -> {
-                        val manager = TokenManager(LocalContext.current.applicationContext)
-                        val token = currentState.accessToken
-                        manager.saveToken(token.token)
-
                         MainScreen()
                     }
 
                     AuthState.UnAuthorized -> {
                         LoginScreen {
-                            viewModel.login(VKID.instance)
+                            viewModel.login()
                         }
                     }
 

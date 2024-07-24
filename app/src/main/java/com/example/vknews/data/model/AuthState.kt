@@ -1,4 +1,4 @@
-package com.example.vknews.presentation.screen.login
+package com.example.vknews.data.model
 
 import com.vk.id.AccessToken
 import com.vk.id.VKIDAuthFail
