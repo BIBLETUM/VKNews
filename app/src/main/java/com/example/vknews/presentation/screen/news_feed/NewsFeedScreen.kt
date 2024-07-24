@@ -17,7 +17,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,7 +30,7 @@ import com.example.vknews.presentation.theme.Blue
 fun NewsFeedScreen(paddingValues: PaddingValues, onCommentsClick: (FeedPost) -> Unit) {
     val viewModel: NewsFeedViewModel = viewModel()
     val newsFeedScreenState =
-        viewModel.newsFeedScreenState.observeAsState(NewsFeedScreenState.Initial)
+        viewModel.newsFeedScreenState.collectAsState(NewsFeedScreenState.Initial)
 
     when (val currentState = newsFeedScreenState.value) {
         is NewsFeedScreenState.Posts -> {
