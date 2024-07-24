@@ -1,21 +1,19 @@
 package com.example.vknews.presentation.screen.comments
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import com.example.vknews.data.NewsFeedRepository
+import androidx.lifecycle.ViewModel
 import com.example.vknews.domain.FeedPost
+import com.example.vknews.domain.use_case.comments.GetCommentsFlowUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class CommentsViewModel(
-    feedPost: FeedPost,
-    application: Application
-) : AndroidViewModel(application) {
+class CommentsViewModel @Inject constructor (
+    private val feedPost: FeedPost,
+    private val getCommentsFlowUseCase: GetCommentsFlowUseCase
+) : ViewModel() {
 
-    private val repository = NewsFeedRepository(application)
-
-    private val _screenState = repository.commentsFlow(feedPost)
+    private val _screenState = getCommentsFlowUseCase(feedPost)
         .filter { it.isNotEmpty() }
         .map {
             CommentsScreenState.Comments(

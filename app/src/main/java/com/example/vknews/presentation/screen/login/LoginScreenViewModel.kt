@@ -1,20 +1,19 @@
 package com.example.vknews.presentation.screen.login
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import com.example.vknews.data.AuthRepository
-import com.vk.id.VKID
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.vknews.domain.use_case.auth.GetAuthStateUseCaseFlow
+import com.example.vknews.domain.use_case.auth.LoginUseCase
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginScreenViewModel(
-    vkid: VKID,
-    application: Application
-) : AndroidViewModel(application) {
+class LoginScreenViewModel @Inject constructor (
+    private val loginUseCase: LoginUseCase,
+    private val getAuthStateUseCaseFlow: GetAuthStateUseCaseFlow,
+) : ViewModel() {
 
-    private val repository = AuthRepository(vkid, application)
-
-    private val _authState = repository.authFlow
-    private val authState = _authState.asStateFlow()
+    private val _authState = getAuthStateUseCaseFlow()
+    private val authState = _authState
 
     fun getAuthState() = authState
 
@@ -23,6 +22,8 @@ class LoginScreenViewModel(
     }
 
     fun login() {
-        repository.login()
+        viewModelScope.launch {
+            loginUseCase()
+        }
     }
 }

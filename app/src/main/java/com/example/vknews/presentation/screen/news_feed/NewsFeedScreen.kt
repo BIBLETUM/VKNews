@@ -23,12 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vknews.domain.FeedPost
+import com.example.vknews.presentation.ViewModelFactory
 import com.example.vknews.presentation.components.PostCard
 import com.example.vknews.presentation.theme.Blue
 
 @Composable
-fun NewsFeedScreen(paddingValues: PaddingValues, onCommentsClick: (FeedPost) -> Unit) {
-    val viewModel: NewsFeedViewModel = viewModel()
+fun NewsFeedScreen(paddingValues: PaddingValues, viewModelFactory: ViewModelFactory, onCommentsClick: (FeedPost) -> Unit) {
+    val viewModel: NewsFeedViewModel = viewModel(factory = viewModelFactory)
     val newsFeedScreenState =
         viewModel.newsFeedScreenState.collectAsState(NewsFeedScreenState.Initial)
 

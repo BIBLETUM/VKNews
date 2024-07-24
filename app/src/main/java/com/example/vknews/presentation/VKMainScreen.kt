@@ -28,7 +28,7 @@ import com.example.vknews.presentation.screen.comments.CommentsScreen
 import com.example.vknews.presentation.screen.news_feed.NewsFeedScreen
 
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModelFactory: ViewModelFactory) {
     val navigationState = rememberNavigationState()
 
     val listNavItems = listOf(
@@ -80,6 +80,7 @@ fun MainScreen() {
             feedPostScreenContent = {
                 NewsFeedScreen(
                     paddingValues = paddingValues,
+                    viewModelFactory = viewModelFactory
                 ) { feedPost ->
                     navigationState.navigateToComments(feedPost)
                 }
@@ -87,6 +88,7 @@ fun MainScreen() {
             commentsScreenContent = {
                 CommentsScreen(
                     paddingValues = paddingValues,
+                    viewModelFactory = viewModelFactory,
                     onBackPressed = {
                         navigationState.navHostController.popBackStack()
                     },

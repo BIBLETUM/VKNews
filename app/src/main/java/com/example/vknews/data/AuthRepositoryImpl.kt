@@ -1,34 +1,33 @@
 package com.example.vknews.data
 
-import android.app.Application
 import android.util.Log
 import com.example.vknews.data.model.AuthState
+import com.example.vknews.domain.repository.AuthRepository
 import com.example.vknews.presentation.TokenManager
 import com.vk.id.AccessToken
 import com.vk.id.VKID
 import com.vk.id.VKIDAuthFail
 import com.vk.id.auth.VKIDAuthCallback
 import com.vk.id.auth.VKIDAuthParams
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class AuthRepository(
-    private val vkid: VKID,
-    private val application: Application
-) {
+class AuthRepositoryImpl @Inject constructor(
+    private val tokenManager: TokenManager,
+) : AuthRepository {
+
+    private val vkid = VKID.instance
 
     val authFlow = MutableStateFlow<AuthState>(AuthState.Initial)
 
-    private val scope = CoroutineScope(Dispatchers.Default)
+    override fun getAuthFlow() = authFlow.asStateFlow()
 
     private val vkAuthCallback = object : VKIDAuthCallback {
         override fun onAuth(accessToken: AccessToken) {
             Log.d("TOKEN", accessToken.token)
 
-            val manager = TokenManager(application)
-            manager.saveToken(accessToken.token)
+            tokenManager.saveToken(accessToken.token)
 
             authFlow.value = AuthState.Authorized(accessToken)
         }
@@ -38,10 +37,9 @@ class AuthRepository(
         }
     }
 
-    fun login() {
-        scope.launch {
-            vkid.authorize(callback = vkAuthCallback, params = initializer.build())
-        }
+    override suspend fun login() {
+        vkid.authorize(callback = vkAuthCallback, params = initializer.build())
+
     }
 
     private val initializer = VKIDAuthParams.Builder().apply {
