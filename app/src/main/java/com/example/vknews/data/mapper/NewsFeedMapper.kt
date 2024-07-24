@@ -51,6 +51,7 @@ class NewsFeedMapper {
         val profiles = responseDto.content.profiles
 
         for (comment in comments) {
+            if (comment.text.isBlank()) continue
             val author = profiles.find { it.id == comment.authorId } ?: continue
             val postComment = PostComment(
                 id = comment.id,
