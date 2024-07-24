@@ -1,15 +1,15 @@
 package com.example.vknews.presentation.screen.comments
 
-import androidx.compose.foundation.Image
+import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,11 +22,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.vknews.domain.FeedPost
 import com.example.vknews.domain.PostComment
 
@@ -38,7 +39,10 @@ fun CommentsScreen(
     feedPost: FeedPost,
 ) {
     val viewModel: CommentsViewModel = viewModel(
-        factory = CommentsViewModelFactory(feedPost)
+        factory = CommentsViewModelFactory(
+            feedPost,
+            LocalContext.current.applicationContext as Application
+        )
     )
     val screenState = viewModel.screenState.observeAsState(CommentsScreenState.Initial)
     val currentState = screenState.value
@@ -93,14 +97,14 @@ private fun CommentItem(
             ),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Image(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = comment.authorAvatarResId),
+        AsyncImage(
+            modifier = Modifier.clip(RoundedCornerShape(50)),
+            model = comment.authorAvatarUrl,
             contentDescription = null
         )
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
-                text = "${comment.authorName} CommentId: ${comment.id}",
+                text = comment.authorName,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 12.sp
             )
@@ -115,13 +119,5 @@ private fun CommentItem(
                 fontSize = 12.sp
             )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewComment() {
-    MaterialTheme {
-        //CommentsScreen(onBackPressed = {}, feedPost = FeedPost(id = 0))
     }
 }

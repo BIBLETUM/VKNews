@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.vknews.data.mapper.NewsFeedMapper
 import com.example.vknews.data.network.ApiFactory
 import com.example.vknews.domain.FeedPost
+import com.example.vknews.domain.PostComment
 import com.example.vknews.domain.StatisticItem
 import com.example.vknews.domain.StatisticType
 import com.example.vknews.presentation.TokenManager
@@ -71,8 +72,16 @@ class NewsFeedRepository(application: Application) {
         _feedPosts[index] = newPost
     }
 
+    suspend fun getComments(feedPost: FeedPost): List<PostComment> {
+        val comments = apiService.getComments(
+            getAccessToken(),
+            feedPost.communityId,
+            feedPost.id
+        )
+        return mapper.mapResponseToComments(comments)
+    }
+
     private fun getAccessToken(): String {
         return token ?: throw IllegalStateException("Token is null")
     }
-
 }
