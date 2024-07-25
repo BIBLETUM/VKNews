@@ -6,6 +6,7 @@ import com.example.vknews.data.CommentsRepositoryImpl
 import com.example.vknews.data.NewsFeedRepositoryImpl
 import com.example.vknews.data.network.ApiFactory
 import com.example.vknews.data.network.ApiService
+import com.example.vknews.domain.repository.AuthRepository
 import com.example.vknews.domain.repository.CommentsRepository
 import com.example.vknews.domain.repository.NewsFeedRepository
 import com.example.vknews.presentation.TokenManager
@@ -26,7 +27,7 @@ interface DataModule {
 
     @ApplicationScope
     @Binds
-    fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepositoryImpl
+    fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 
     companion object {
         @ApplicationScope

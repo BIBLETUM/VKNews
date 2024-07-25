@@ -88,7 +88,6 @@ fun MainScreen(viewModelFactory: ViewModelFactory) {
             commentsScreenContent = {
                 CommentsScreen(
                     paddingValues = paddingValues,
-                    viewModelFactory = viewModelFactory,
                     onBackPressed = {
                         navigationState.navHostController.popBackStack()
                     },

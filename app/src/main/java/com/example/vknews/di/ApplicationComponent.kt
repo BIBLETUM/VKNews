@@ -1,7 +1,6 @@
 package com.example.vknews.di
 
 import android.content.Context
-import com.example.vknews.domain.FeedPost
 import com.example.vknews.presentation.MainActivity
 import dagger.BindsInstance
 import dagger.Component
@@ -17,11 +16,12 @@ interface ApplicationComponent {
 
     fun inject(activity: MainActivity)
 
+    fun getCommentsScreenComponentFactory(): CommentsScreenComponent.Factory
+
     @Component.Factory
     interface Factory {
         fun create(
             @BindsInstance context: Context,
-            @BindsInstance feedPost: FeedPost,
         ): ApplicationComponent
     }
 

@@ -1,7 +1,6 @@
 package com.example.vknews.di
 
 import androidx.lifecycle.ViewModel
-import com.example.vknews.presentation.screen.comments.CommentsViewModel
 import com.example.vknews.presentation.screen.login.LoginScreenViewModel
 import com.example.vknews.presentation.screen.news_feed.NewsFeedViewModel
 import dagger.Binds
@@ -20,10 +19,5 @@ interface ViewModelModule {
     @ViewModelKey(LoginScreenViewModel::class)
     @Binds
     fun bindAuthViewModel(viewModel: LoginScreenViewModel): ViewModel
-
-    @IntoMap
-    @ViewModelKey(CommentsViewModel::class)
-    @Binds
-    fun bindCommentsViewModel(viewModel: CommentsViewModel): ViewModel
 
 }
