@@ -39,7 +39,6 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun login() {
         vkid.authorize(callback = vkAuthCallback, params = initializer.build())
-
     }
 
     private val initializer = VKIDAuthParams.Builder().apply {

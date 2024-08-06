@@ -18,24 +18,21 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val component by lazy {
-        (application as NewsFeedApplication).component
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        component.inject(this)
         super.onCreate(savedInstanceState)
         VKID.init(this)
         setContent {
+            val component = getApplicationComponent()
+            val viewModel: LoginScreenViewModel = viewModel(
+                factory = component.getViewModelFactory()
+            )
+            val authState = viewModel.getAuthState().collectAsState()
+
             VKNewsTheme {
-                val viewModel: LoginScreenViewModel = viewModel(
-                    factory = viewModelFactory
-                )
-                val authState = viewModel.getAuthState().collectAsState()
 
                 when (val currentState = authState.value) {
                     is AuthState.Authorized -> {
-                        MainScreen(viewModelFactory)
+                        MainScreen()
                     }
 
                     AuthState.UnAuthorized -> {

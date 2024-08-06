@@ -1,7 +1,7 @@
 package com.example.vknews.di
 
 import android.content.Context
-import com.example.vknews.presentation.MainActivity
+import com.example.vknews.presentation.ViewModelFactory
 import dagger.BindsInstance
 import dagger.Component
 
@@ -14,7 +14,7 @@ import dagger.Component
 )
 interface ApplicationComponent {
 
-    fun inject(activity: MainActivity)
+    fun getViewModelFactory(): ViewModelFactory
 
     fun getCommentsScreenComponentFactory(): CommentsScreenComponent.Factory
 
